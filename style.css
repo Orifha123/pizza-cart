@@ -1,0 +1,107 @@
+body{
+    background-color:white;
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: greenyellow;
+}
+.menu, .cart, .checkout {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+}
+.menu button, .cart button, .checkout button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.menu button:hover, .cart button:hover, .checkout button:hover {
+    background-color: #45a049;
+}
+.cart .remove-button {
+    background-color: #f44336;
+}
+.cart .remove-button:hover {
+    background-color: #e53935;
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+.message {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    display: none;
+}
+.message.success {
+    background-color: #4CAF50;
+    color: white;
+}
+.message.error {
+    background-color: #f44336;
+    color: white;
+}
+.large-button{
+    padding: 20px;
+    font-size: 18px;
+    border-radius: 0.5cap;
+    border-color: red;
+}
+.pizza {
+    border: 1px solid #4A051C;
+    padding:1em;
+    margin:1em;
+    /*margin-left: 0.5em;*/
+    margin-bottom: 0.5em;
+    border-radius: 1em;
+   
+}
+
+.medium_pizza{
+    background-color:#23CE6B;
+    flex:2
+}
+
+.large_pizza{
+    background-color:#BD2D87;
+    flex:2
+}
+
+.small_pizza{
+    background-color:#8DAB7F;
+    flex:1
+}
+
+.contact_us{
+    background-color:#99d98c;
+   
+}
+
+@media(min-width:768px){
+    /*body {
+        background-color:blue;
+    }*/
+
+}
+
+
+@media(min-width:960px){
+    /*body {
+       /* background-color:blue;
+    }*/
+
+    .pizzas{
+        display:flex
+    }
+}

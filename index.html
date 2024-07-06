@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Pizza</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body>
+    <h1 style="text-align: center;" >Perfect Pizza</h1>
+    <h3 style="text-align: center;" >pizza order</h3>
+
+    <div class="container" x-data="pizzaCart()"> 
+        <div class="menu">
+            <h2>Shopping cart</h2>
+            <div>
+                <button  @click="addToCart('small', 31.99)">Order Small Pizza (R31.99) +</button>
+                <button @click="addToCart('medium', 58.99)">Order Medium Pizza (R58.99) +</button>
+                <button class="large-button" @click="addToCart('large', 178.97)">Order Large Pizza (R178.97) +</button>
+            </div>
+        </div>
+
+        <div class="cart">
+            <h2>Cart</h2>
+            <template x-if="cart.length">
+                <div>
+                    <template x-for="item in cart" :key="item.size">
+                        <div class="cart-item">
+                            <span x-text="item.size.charAt(0).toUpperCase() + item.size.slice(1) + ' Pizza'"></span>
+                            <span x-text="'R' + (item.quantity * item.price).toFixed(2) + ' (' + item.quantity + ')'"></span>
+                            <button class="remove-button" @click="removeFromCart(item.size)">Remove</button>
+                        </div>
+                    </template>
+                    <hr>
+                    <div class="cart-item">
+                        <strong>Total Cost:</strong>
+                        <strong x-text="'R' + totalCost.toFixed(2)"></strong>
+                    </div>
+                </div>
+            </template>
+            <template x-if="!cart.length">
+                <p>enjoy your pizza.</p>
+            </template>
+        </div>
+
+        <div class="checkout" x-show="cart.length">
+            <h2>Checkout</h2>
+            <button @click="checkout">Check Out</button>
+            <div x-show="showPaymentInput" style="margin-top: 10px;">
+                <input type="number" placeholder="Enter Payment" x-model.number="paymentAmount">
+                <button @click="completePayment">Submit Payment</button>
+            </div>
+        </div>
+
+
+        <div class="message success" x-show="message === 'success'" x-text="successMessage" @transitionend="message = ''"></div>
+        <div class="message error" x-show="message === 'error'" x-text="errorMessage" @transitionend="message = ''"></div>
+    </div>
+
+    <script>
+        function pizzaCart() {
+            return {
+                cart: [],
+                totalCost: 0,
+                paymentAmount: 0,
+                showPaymentInput: false,
+                message: '',
+                successMessage: '',
+                errorMessage: '',
+
+                addToCart(size, price) {
+                    let item = this.cart.find(item => item.size === size);
+                    if (item) {
+                        item.quantity++;
+                    } else {
+                        this.cart.push({ size, price, quantity: 1 });
+                    }
+                    this.updateTotalCost();
+                },
+
+                removeFromCart(size) {
+                    this.cart = this.cart.filter(item => item.size !== size);
+                    this.updateTotalCost();
+                },
+
+                updateTotalCost() {
+                    this.totalCost = this.cart.reduce((total, item) => total + item.quantity * item.price, 0);
+                },
+
+                checkout() {
+                    this.showPaymentInput = true;
+                },
+
+                completePayment() {
+                    if (this.paymentAmount >= this.totalCost) {
+                        this.successMessage = "Enjoy your pizzas!";
+                        this.cart = [];
+                        this.totalCost = 0;
+                    } else {
+                        this.errorMessage = "Sorry - that is not enough money!";
+                    }
+                    this.paymentAmount = 0;
+                    this.showPaymentInput = false;
+                    this.message = this.successMessage ? 'success' : 'error';
+                    
+                
+                    setTimeout(() => this.message = '', 1000);
+                }
+            }
+        }
+    </script>
+
+
+
+    <div class="pizzas">
+        <div class="pizza medium_pizza">
+            <h2>Medium Pizza</h2>
+            <img src="images\pizza-one.png" width="100">
+            <h3>R89.99</h3>
+            <div>
+                Medium margeritha pizza with3 toppings max.2 or less other toppings.
+            </div>
+            <div x-data="{ show: false }">
+                <button @click="show=!show">buy</button>
+                <div x-show="show">purchased!!</div>
+            </div>
+        </div>
+
+        <div class="pizza large_pizza">
+            <h2>Large Pizza</h2>
+            <img src="images/pizza-one.png" width="150">
+            <h3>R129.99</h3>
+            <div>
+                Large margeritha pizza with 3 toppings max. 3 meat toppings max. 3 or less other toppings.
+            </div>
+            <div x-data="{ show: false }">
+                <button @click="show=!show">buy</button>
+                <div x-show="show">purchased!!</div>
+            </div>
+        </div>
+
+        <div class="pizza small_pizza">
+            <h2>Small Pizza</h2>
+            <img src="images/pizza-one.png" width="125">
+            <h3>R49.99</h3>
+            <div>
+                Small pizza with 3 toppings 1 meat topping. 3 or less other toppings.
+            </div>
+            <div x-data="{ show: false }">
+                <button @click="show=!show">buy</button>
+                <div x-show="show">purchased!!</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="pizza contact_us">
+        <h2>Contact details</h2>
+        Contact us at:(021)-541-100
+        twitter
+        /fb
+        /insta
+        @perfectpizzaz
+    </div>
+
+</body>
+
+</html>
