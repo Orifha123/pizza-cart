@@ -1,5 +1,5 @@
 body{
-    background-color:white;
+    background-color: antiquewhite;
     font-family:Verdana, Geneva, Tahoma, sans-serif
 }
 
@@ -7,7 +7,7 @@ body{
     max-width: 800px;
     margin: auto;
     padding: 20px;
-    background-color: blue;
+    background-color:sienna;
 }
 .menu, .cart, .checkout {
     margin-bottom: 20px;
@@ -19,7 +19,7 @@ body{
     padding: 10px 20px;
     margin-top: 10px;
     cursor: pointer;
-    background-color: red;
+    background-color:tomato;
     color: white;
     border: none;
     border-radius: 5px;
