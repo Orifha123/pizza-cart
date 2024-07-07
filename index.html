@@ -10,19 +10,43 @@
 </head>
 
 <body>
-    <h1 style="text-align: center;" >Perfect Pizza</h1>
-    <h3 style="text-align: center;" >pizza order</h3>
+    <h1 style="text-align: center;">Perfect Pizza</h1>
+    <h3 style="text-align: center;">pizza order</h3>
+    <div class="container" x-data="pizzaCart()" @add-to-cart.window="addToCart">
 
-    <div class="container" x-data="pizzaCart()"> 
         <div class="menu">
-            <h2>Shopping cart</h2>
-            <div>
-                <button  @click="addToCart('small', 31.99)">Order Small Pizza (R31.99) +</button>
-                <button @click="addToCart('medium', 58.99)">Order Medium Pizza (R58.99) +</button>
-                <button class="large-button" @click="addToCart('large', 178.97)">Order Large Pizza (R178.97) +</button>
+            <h2>shopping_cart</h2>
+            <div class="counter-container" x-data="{ count: 1 }">
+                <span>Small Pizza </span>
+                <button class="counter-btn" @click="count = Math.max(1, count - 1)">-</button>
+                <span x-text="count"></span>
+                <button class="counter-btn" @click="count++">+</button>
+                <span>R31.99</span>
+                <button class="counter-btn"
+                    @click="$dispatch('add-to-cart', { size: 'small', price: 31.99, quantity: count })">Add to
+                    Cart</button>
+            </div>
+            <div class="counter-container" x-data="{ count: 1 }">
+                <span>Medium Pizza</span>
+                <button class="counter-btn" @click="count = Math.max(1, count - 1)">-</button>
+                <span x-text="count"></span>
+                <button class="counter-btn" @click="count++">+</button>
+                <span>R58.99</span>
+                <button class="counter-btn"
+                    @click="$dispatch('add-to-cart', { size: 'medium', price: 58.99, quantity: count })">Add to
+                    Cart</button>
+            </div>
+            <div class="counter-container" x-data="{ count: 1 }">
+                <span>Large Pizza</span>
+                <button class="counter-btn" @click="count = Math.max(1, count - 1)">-</button>
+                <span x-text="count"></span>
+                <button class="counter-btn" @click="count++">+</button>
+                <span>R87.99</span>
+                <button class="counter-btn"
+                    @click="$dispatch('add-to-cart', { size: 'large', price: 87.99, quantity: count })">Add to
+                    Cart</button>
             </div>
         </div>
-
         <div class="cart">
             <h2>Cart</h2>
             <template x-if="cart.length">
@@ -30,7 +54,8 @@
                     <template x-for="item in cart" :key="item.size">
                         <div class="cart-item">
                             <span x-text="item.size.charAt(0).toUpperCase() + item.size.slice(1) + ' Pizza'"></span>
-                            <span x-text="'R' + (item.quantity * item.price).toFixed(2) + ' (' + item.quantity + ')'"></span>
+                            <span
+                                x-text="'R' + (item.quantity * item.price).toFixed(2) + ' (' + item.quantity + ')'"></span>
                             <button class="remove-button" @click="removeFromCart(item.size)">Remove</button>
                         </div>
                     </template>
@@ -42,41 +67,39 @@
                 </div>
             </template>
             <template x-if="!cart.length">
-                <p>enjoy your pizza.</p>
+                <p>Your cart is empty.</p>
             </template>
         </div>
+
 
         <div class="checkout" x-show="cart.length">
             <h2>Checkout</h2>
             <button @click="checkout">Check Out</button>
             <div x-show="showPaymentInput" style="margin-top: 10px;">
                 <input type="number" placeholder="Enter Payment" x-model.number="paymentAmount">
-                <button @click="completePayment">Submit Payment</button>
+                <button @click="completePayment">Pay</button>
             </div>
         </div>
-
-
-        <div class="message success" x-show="message === 'success'" x-text="successMessage" @transitionend="message = ''"></div>
-        <div class="message error" x-show="message === 'error'" x-text="errorMessage" @transitionend="message = ''"></div>
     </div>
 
     <script>
         function pizzaCart() {
+            const MIN_PAYMENT = 31.99; 
+            const MAX_PAYMENT = 1000; 
+
             return {
                 cart: [],
                 totalCost: 0,
                 paymentAmount: 0,
                 showPaymentInput: false,
-                message: '',
-                successMessage: '',
-                errorMessage: '',
 
-                addToCart(size, price) {
+                addToCart(event) {
+                    const { size, price, quantity } = event.detail;
                     let item = this.cart.find(item => item.size === size);
                     if (item) {
-                        item.quantity++;
+                        item.quantity += quantity;
                     } else {
-                        this.cart.push({ size, price, quantity: 1 });
+                        this.cart.push({ size, price, quantity });
                     }
                     this.updateTotalCost();
                 },
@@ -95,23 +118,32 @@
                 },
 
                 completePayment() {
-                    if (this.paymentAmount >= this.totalCost) {
-                        this.successMessage = "Enjoy your pizzas!";
+                    if (this.paymentAmount < MIN_PAYMENT) {
+                        alert(`Payment amount must be at least R${MIN_PAYMENT.toFixed(2)}.`);
+                    } else if (this.paymentAmount > MAX_PAYMENT) {
+                        alert(`Payment amount cannot exceed R${MAX_PAYMENT.toFixed(2)}.`);
+                    } else if (this.paymentAmount < this.totalCost) {
+                        alert("Insufficient funds. Please enter a higher amount.");
+                    } else {
+                        alert("Payment successful! Enjoy your pizzas.");
                         this.cart = [];
                         this.totalCost = 0;
-                    } else {
-                        this.errorMessage = "Sorry - that is not enough money!";
                     }
                     this.paymentAmount = 0;
                     this.showPaymentInput = false;
-                    this.message = this.successMessage ? 'success' : 'error';
-                    
-                
-                    setTimeout(() => this.message = '', 1000);
                 }
             }
         }
+
+        // Listen for 'add-to-cart' events
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('pizzaCart', pizzaCart);
+        });
     </script>
+
+
+
+
 
 
 
@@ -157,7 +189,7 @@
 
     </div>
 
-    <div class="pizza contact_us">
+    <div style="text-align: center;" class="pizza contact_us">
         <h2>Contact details</h2>
         Contact us at:(021)-541-100
         twitter
